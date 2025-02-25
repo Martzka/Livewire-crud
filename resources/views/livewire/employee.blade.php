@@ -46,8 +46,13 @@
             </div>
             <div class="mb-3 row">
                 <label class="col-sm-2 col-form-label"></label>
-                <div class="col-sm-10"><button type="button" class="btn btn-primary" name="submit"
-                    wire:click="store()">SIMPAN</button>
+                <div class="col-sm-10">
+                    @if ($updateData == false)
+                    <button type="button" class="btn btn-primary" name="submit" wire:click="store()">SIMPAN</button>
+                    @else
+                    <button type="button" class="btn btn-primary" name="submit" wire:click="update()">UPDATE</button>      
+                    @endif
+                    <button type="button" class="btn btn-secondary" name="submit" wire:click="clear()">Clear</button>
                 </div>
             </div>
         </form>
@@ -55,32 +60,42 @@
     <!-- AKHIR FORM -->
 
     <!-- START DATA -->
-    <div class="my-3 p-3 bg-body rounded shadow-sm">
-        <h1>Data Pegawai</h1>
-        <table class="table table-striped">
-            <thead>
-                <tr>
-                    <th class="col-md-1">No</th>
-                    <th class="col-md-4">Nama</th>
-                    <th class="col-md-3">Email</th>
-                    <th class="col-md-2">Alamat</th>
-                    <th class="col-md-2">Aksi</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>1</td>
-                    <td>Muhammad</td>
-                    <td>muhammad@gmail.com</td>
-                    <td>Yogyakarta</td>
-                    <td>
-                        <a href="" class="btn btn-warning btn-sm">Edit</a>
-                        <a href="" class="btn btn-danger btn-sm">Del</a>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
 
+<div class="my-3 p-3 bg-body rounded shadow-sm">
+    <h1>Data Pegawai</h1>
+    
+    <!-- Tabel Pegawai -->
+    {{ $dataEmployees->links() }}
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>No</th>
+                <th>Nama</th>
+                <th>Email</th>
+                <th>Alamat</th>
+                <th>Aksi</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach ($dataEmployees as $key => $employee)
+            <tr>
+                <td>{{ $dataEmployees->firstItem() + $key }}</td>
+                <td>{{ $employee->nama }}</td>
+                <td>{{ $employee->email }}</td>
+                <td>{{ $employee->alamat }}</td>
+                <td>
+                    <a wire:click="edit({{ $employee->id }})" class="btn btn-warning btn-sm">Edit</a>
+                    <a href="#" class="btn btn-danger btn-sm">Del</a>
+                </td>
+            </tr>
+            @endforeach
+        </tbody>
+    </table>
+
+    <!-- Pagination -->
+    {{ $dataEmployees->links() }}
+</div>
+    
     </div>
     <!-- AKHIR DATA -->
 </div>
