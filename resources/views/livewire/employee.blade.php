@@ -61,35 +61,44 @@
         <h1>Data Pegawai</h1>
         <div class="pb-3 pt-3">
             <input type="text" class="form-control mb-3 w-25" placeholder="Search...." wire:model.live="katakunci">
-
         </div>
+
+        @if ($employee_selected_id)
+        <a wire:click="delete_confirmation('') "class="btn btn-danger btn-sm mb-3" data-bs-toggle="modal" data-bs-target="#exampleModal">Del {{ count($employee_selected_id) }} data</a>
+        @endif  
+
         <!-- Tabel Pegawai -->
         {{ $dataEmployees->links() }}
         <table class="table table-striped">
             <thead>
                 <tr>
-                    <th>No</th>
-                    <th>Nama</th>
-                    <th>Email</th>
-                    <th>Alamat</th>
-                    <th>Aksi</th>
+                    <th></th> 
+                    <th class="col-md-1">No</th>
+                    <th class="col-md-4">Nama</th>
+                    <th class="col-md-3">Email</th>
+                    <th class="col-md-2">Alamat</th>
+                    <th class="col-md-2">Aksi</th>
                 </tr>
             </thead>
             <tbody>
-                @foreach ($dataEmployees as $key => $employee)
+                @foreach ($dataEmployees as $key => $value)
                 <tr>
-                    <td>{{ $dataEmployees->firstItem() + $key }}</td>
-                    <td>{{ $employee->nama }}</td>
-                    <td>{{ $employee->email }}</td>
-                    <td>{{ $employee->alamat }}</td>
+                    <td class="text-left">
+                        <input type="checkbox" wire:key="{{ $value->id }}" value="{{ $value->id }}" wire:model.live="employee_selected_id">
+                    </td>
+                    <td>{{ $loop->iteration + ($dataEmployees->currentPage() - 1) * $dataEmployees->perPage() }}</td>
+                    <td>{{ $value->nama }}</td>
+                    <td>{{ $value->email }}</td>
+                    <td>{{ $value->alamat }}</td>
                     <td>
-                        <a wire:click="edit({{ $employee->id }})" class="btn btn-warning btn-sm">Edit</a>
-                        <a wire:click="delete_confirmation({{ $employee->id }})" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#exampleModal">Del</a>
+                        <a wire:click="edit({{ $value->id }})" class="btn btn-warning btn-sm">Edit</a>
+                        <a wire:click="delete_confirmation({{ $value->id }})" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#exampleModal">Del</a>
                     </td>
                 </tr>
                 @endforeach
             </tbody>
         </table>
+        
         <!-- Pagination -->
         {{ $dataEmployees->links() }}
     </div>
@@ -113,4 +122,4 @@
         </div>
     </div>
 
-</div> 
+</div>

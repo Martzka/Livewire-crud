@@ -17,6 +17,7 @@ class Employee extends Component
     public $updateData = false;
     public $employee_id;
     public $katakunci;
+    public $employee_selected_id = [];
 
     public function store()
     {
@@ -78,26 +79,42 @@ class Employee extends Component
 
         $this->updateData = false;
         $this->employee_id = '';
+        $this->employee_selected_id = [];
     }
+
     
     public function delete()
-    {
-        $data = ModelsEmployeee::find($this->employee_id);
-        if ($data) {
-            $data->delete();
-            session()->flash('message', 'Data Berhasil di-delete');
-        } else {
-            session()->flash('message', 'Data tidak ditemukan');
+    {  
+        if ($this->employee_id != '') {
+            
+            $id = $this->employee_id;
+            ModelsEmployeee::find($id)->delete();
         }
+    
+        if (!empty($this->employee_selected_id)) {
+            
+            foreach ($this->employee_selected_id as $employeeId) {
+                ModelsEmployeee::find($employeeId)->delete();
+            }
+        }
+    
+        
+        session()->flash('message', 'Data berhasil di-delete');
+    
         
         $this->clear();
     }
     
+
     public function delete_confirmation($id)
     {
         
+        if ($id != '') {
         $this->employee_id = $id;
+        }
     }
+
+        
 
     public function render()
 {
