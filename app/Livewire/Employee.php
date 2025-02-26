@@ -16,6 +16,7 @@ class Employee extends Component
     public $alamat;
     public $updateData = false;
     public $employee_id;
+    public $katakunci;
 
     public function store()
     {
@@ -37,7 +38,8 @@ class Employee extends Component
         $this->clear();
     }
 
-    public function edit($id){
+    public function edit($id)
+    {
         $data = ModelsEmployeee::find($id);
         $this->nama = $data->nama;
         $this->email = $data->email;
@@ -46,7 +48,9 @@ class Employee extends Component
         $this->updateData = true;
         $this->employee_id = $id;
     }
-    public function update(){
+
+    public function update()
+    {
         $rules = [
             'nama' => 'required',
             'email' => 'required|email',
@@ -66,7 +70,8 @@ class Employee extends Component
         $this->clear();
     }
 
-    public function clear(){
+    public function clear()
+    {
         $this->nama = '';
         $this->email = '';
         $this->alamat = '';
@@ -74,10 +79,39 @@ class Employee extends Component
         $this->updateData = false;
         $this->employee_id = '';
     }
+    
+    public function delete()
+    {
+        $data = ModelsEmployeee::find($this->employee_id);
+        if ($data) {
+            $data->delete();
+            session()->flash('message', 'Data Berhasil di-delete');
+        } else {
+            session()->flash('message', 'Data tidak ditemukan');
+        }
+        
+        $this->clear();
+    }
+    
+    public function delete_confirmation($id)
+    {
+        
+        $this->employee_id = $id;
+    }
 
     public function render()
-    {
-        $data = ModelsEmployeee::orderBy('nama','asc')->paginate(2);
-        return view('livewire.employee',['dataEmployees'=>$data]);
+{
+    if($this->katakunci != null) {
+        $data = ModelsEmployeee::where('nama', 'like', '%'.$this->katakunci. '%')
+        ->orWhere('email', 'like', '%' .$this->katakunci . '%')
+        ->orWhere('alamat', 'like', '%' .$this->katakunci . '%')
+                               ->orderBy('nama', 'asc')
+                               ->paginate(2);
+    } else {
+        $data = ModelsEmployeee::orderBy('nama', 'asc')->paginate(2);
     }
+    
+    return view('livewire.employee', ['dataEmployees' => $data]);
+}
+
 }
